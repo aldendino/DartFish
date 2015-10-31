@@ -144,44 +144,52 @@ class Fish {
     double deltaX = 0.0;
     double deltaY = 1.0;
 
+    // Preventing divide by zero
     if (diffX != 0) {
       double ratioYtoX = diffY / diffX;
       deltaX = sqrt(pow(radius, 2) / (1 + pow(ratioYtoX, 2)));
       deltaY = deltaX * ratioYtoX;
     }
 
-    double moveX = 0.0;
-    double moveY = 0.0;
+    // Set tolerances to reduce jitter
+    int tolX = 3;
+    int tolY = 3;
 
-    int tolX = 5;
-    int tolY = 5;
-
+    // Set the appropriate image
     if (baitX > fishX) {
       setImg(Dir.Right);
     } else if (baitX < fishX) {
       setImg(Dir.Left);
     }
 
+    double moveX = 0.0;
+    double moveY = 0.0;
+
+    // Determine the basic x delta
     if (baitX > fishX + tolX + (width / 2)) {
       moveX = deltaX;
     } else if (baitX < fishX - tolX - (width / 2)) {
       moveX = -deltaX;
     }
 
+    // Determine the basic y delta
     if (baitY > fishY + tolY) {
       moveY = deltaY;
     } else if (baitY < fishY - tolY) {
       moveY = -deltaY;
     }
 
+    // Account for the speed factor
     moveX *= spf;
     moveY *= spf;
 
+    // Apply the move to the basic fish coordinates
     fishX += moveX;
     fishY += moveY;
 
-    int posX = (fishX - (width / 2) + ampX * sin(time / 8)).toInt();
-    int posY = (fishY - (height / 2) + ampY * sin(time)).toInt();
+    // Determine the new positions accounting for undulation
+    int posX = (fishX - (width / 2) + ampX * sin(time / 8)).round();
+    int posY = (fishY - (height / 2) + ampY * sin(time)).round();
 
     fish.style.left = '${posX}px';
     fish.style.top = '${posY}px';
