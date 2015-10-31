@@ -11,6 +11,7 @@ int mouseY = 0;
 num start = 0.0;
 final int fps = 120;
 final double interval = 1000/fps;
+Random rand = new Random();
 
 enum Dir {Left, Right}
 
@@ -21,8 +22,8 @@ void main() {
   document.onMouseMove.listen((e) {
     int x = e.client.x;
     int y = e.client.y;
-    if(x != null) mouseX = x;
-    if(y != null) mouseY = y;
+    if (x != null) mouseX = x;
+    if (y != null) mouseY = y;
     fish.setBait(mouseX, mouseY);
     school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
   });
@@ -42,7 +43,7 @@ void main() {
 }
 
 void loop(num delta) {
-  if(delta - start > interval) {
+  if (delta - start > interval) {
     fish.doAnimation();
     school.forEach((fish) => fish.doAnimation());
     start = delta;
@@ -52,10 +53,10 @@ void loop(num delta) {
 
 void spawnFish() {
   DivElement fish = new DivElement()..classes.add('abs');
-  ImageElement fishImg = (new ImageElement())..src = "media/fish_right.png";
+  ImageElement fishImg = new ImageElement()..src = "media/fish_right.png";
   fish.children.add(fishImg);
   document.body.children.add(fish);
-  Fish egg = new Fish(fish, fishImg);
+  Fish egg = new Fish(fish, fishImg, rand.nextDouble() + 1);
   egg.setBait(mouseX, mouseY);
   school.add(egg);
 }
@@ -75,8 +76,9 @@ class Fish {
   int baitX;
   int baitY;
   double time;
+  double spf;
 
-  Fish(DivElement fish, ImageElement fishImg) {
+  Fish(DivElement fish, ImageElement fishImg, [double spf = 1]) {
     this.fish = fish;
     this.fishImg = fishImg;
     width  = 0;
@@ -87,6 +89,7 @@ class Fish {
     baitX = 0;
     baitY = 0;
     time = 0.0;
+    this.spf = spf;
   }
 
   void setBait(int x, int y) {
@@ -95,11 +98,11 @@ class Fish {
   }
 
   void setImg(Dir dir) {
-    if(dir == Dir.Left && isRight) {
+    if (dir == Dir.Left && isRight) {
       fishImg.src = leftImg;
       isRight = false;
     }
-    if(dir == Dir.Right && !isRight) {
+    if (dir == Dir.Right && !isRight) {
       fishImg.src = rightImg;
       isRight = true;
     }
@@ -117,7 +120,7 @@ class Fish {
     double deltaX = 0.0;
     double deltaY = 1.0;
 
-    if(diffX != 0) {
+    if (diffX != 0) {
       double ratioYtoX = diffY / diffX;
       deltaX = sqrt(pow(radius, 2) / (1 + pow(ratioYtoX, 2)));
       deltaY = deltaX * ratioYtoX;
@@ -130,23 +133,26 @@ class Fish {
     int tolY = 5;
     int amp = 10;
 
-    if(baitX > fishX) {
+    if (baitX > fishX) {
       setImg(Dir.Right);
-    } else if(baitX < fishX) {
+    } else if (baitX < fishX) {
       setImg(Dir.Left);
     }
 
-    if(baitX > fishX + tolX + (width / 2)) {
+    if (baitX > fishX + tolX + (width / 2)) {
       moveX = deltaX;
-    } else if(baitX < fishX - tolX - (width / 2)) {
+    } else if (baitX < fishX - tolX - (width / 2)) {
       moveX = -deltaX;
     }
 
-    if(baitY > fishY + tolY + amp){// + (width / 2)) {
+    if (baitY > fishY + tolY + amp){// + (width / 2)) {
       moveY = deltaY;
-    } else if(baitY < fishY - tolY - amp){// - (width / 2)) {
+    } else if (baitY < fishY - tolY - amp){// - (width / 2)) {
       moveY = -deltaY;
     }
+
+    moveX *= spf;
+    moveY *= spf;
 
     moveY += amp * sin(time);
 
