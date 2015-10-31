@@ -16,3 +16,13 @@ body {
     position: absolute;
     left: 0;
 }
+
+#count {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    padding: 20px;
+    font-size: 5vw;
+    font-family: 'Roboto', sans-serif;
+}

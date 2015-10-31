@@ -12,10 +12,13 @@ num lastFrame = 0.0; // Time count for animation deltas
 final int fps = 120; // Frames per second
 final double interval = 1000 / fps; // Animation interval
 Random rand = new Random(); // Fish property randomization
+ParagraphElement count;
 
 enum Dir { Left, Right } // Fish direction for image choosing
 
 void main() {
+  count = querySelector('#count');
+  count.text = 0.toString();
   fish = new Fish(querySelector('#fish'), querySelector('#fishImg'));
   school = [];
 
@@ -67,6 +70,7 @@ void spawnFish() {
       40 * rand.nextDouble() + 10 + lenScale / 2);
   egg.setBait(mouseX, mouseY);
   school.add(egg);
+  count.text = (school.length + 1).toString();
 }
 
 class Fish {
@@ -126,6 +130,9 @@ class Fish {
 
   /// Perform one step of animation
   void animate() {
+    // TODO better distribution
+    // TODO acceleration and deceleration, especially for fast turns
+
     width = fishImg.client.width;
     height = fishImg.client.height;
 
