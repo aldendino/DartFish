@@ -58,8 +58,13 @@ void spawnFish() {
   ImageElement fishImg = new ImageElement()..src = "media/fish_right.png";
   fish.children.add(fishImg);
   document.body.children.add(fish);
-  Fish egg = new Fish(fish, fishImg, rand.nextDouble() + 1,
-      60 * rand.nextDouble() + 20, 40 * rand.nextDouble() + 10);
+  num lenScale = school.length + 1;
+  Fish egg = new Fish(
+      fish,
+      fishImg,
+      rand.nextDouble() + 1,
+      60 * rand.nextDouble() + 20 + lenScale * 2,
+      40 * rand.nextDouble() + 10 + lenScale / 2);
   egg.setBait(mouseX, mouseY);
   school.add(egg);
 }
