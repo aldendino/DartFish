@@ -12,12 +12,12 @@ num lastFrame = 0.0; // Time count for animation deltas
 final int fps = 60; // Frames per second
 final double interval = 1000 / fps; // Animation interval
 Random rand = new Random(); // Fish property randomization
-ParagraphElement count;
+ParagraphElement count; //
 
 enum Dir { Left, Right } // Fish direction for image choosing
 
 void main() {
-  fish = new Fish(querySelector('#fish'), querySelector('#fishImg'));
+  fish = new Fish(querySelector('#fish'));
   school = [];
   school.add(fish);
   count = querySelector('#count');
@@ -41,6 +41,12 @@ void main() {
     }
   });
 
+  document.onMouseLeave.listen((e) {
+    school.forEach((Fish fish) => fish.setBait(
+        rand.nextInt(window.innerWidth) + 1,
+        rand.nextInt(window.innerHeight) + 1));
+  });
+
   window.animationFrame.then(loop);
 }
 
@@ -55,13 +61,16 @@ void loop(num delta) {
 
 /// Spawn a new fish and add it to the school
 void spawnFish() {
-  DivElement fish = new DivElement()..classes.add('abs');
-  ImageElement fishImg = new ImageElement()..src = "media/fish_right.png";
-  fish.children.add(fishImg);
+  ImageElement fish = new ImageElement()
+    ..classes.add('abs')
+    ..src = "media/fish_right.png"
+    ..onClick.listen((e) {
+      window.location.href =
+          'https://upload.wikimedia.org/wikipedia/commons/c/c3/Bludger_(fish).png';
+    });
   document.body.children.add(fish);
   Fish egg = new Fish(
       fish,
-      fishImg,
       rand.nextDouble() + 1,
       60 * rand.nextDouble() + 20 + school.length * 2,
       40 * rand.nextDouble() + 10 + school.length / 2);
@@ -75,8 +84,7 @@ class Fish {
   static String leftImg = resName('left');
   static String rightImg = resName('right');
 
-  DivElement fish;
-  ImageElement fishImg;
+  ImageElement fish; // Fish image
   bool isRight; // Whether or not the fish is facing right
   int width; // Width of the fish
   int height; // Height of the fish
@@ -89,14 +97,13 @@ class Fish {
   double ampX; // The horizontal undulation factor
   double ampY; // The vertical undulation factor
 
-  Fish(DivElement fish, ImageElement fishImg,
+  Fish(ImageElement fish,
       [double spf = 1.0, double ampX = 40.0, double ampY = 30.0]) {
     this.fish = fish;
-    this.fishImg = fishImg;
     width = 0;
     height = 0;
     isRight = true;
-    fishImg.style.src = rightImg;
+    fish.style.src = rightImg;
     fishX = 0.0;
     fishY = 0.0;
     baitX = 0;
@@ -116,11 +123,11 @@ class Fish {
   /// Change the image to match the fish's direction
   void setImg(Dir dir) {
     if (dir == Dir.Left && isRight) {
-      fishImg.src = leftImg;
+      fish.src = leftImg;
       isRight = false;
     }
     if (dir == Dir.Right && !isRight) {
-      fishImg.src = rightImg;
+      fish.src = rightImg;
       isRight = true;
     }
   }
@@ -130,8 +137,8 @@ class Fish {
     // TODO better distribution
     // TODO acceleration and deceleration, especially for fast turns
 
-    width = fishImg.client.width;
-    height = fishImg.client.height;
+    width = fish.client.width;
+    height = fish.client.height;
 
     int diffX = max(fishX, baitX) - min(fishX, baitX);
     int diffY = max(fishY, baitY) - min(fishY, baitY);
