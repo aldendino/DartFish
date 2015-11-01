@@ -15,14 +15,14 @@ body {
 .abs {
     position: absolute;
     left: 0;
+    top: 0;
 }
 
 #count {
-    position: absolute;
-    top: 0;
     left: 0;
     color: white;
     padding: 20px;
+    margin: 0;
     font-size: 5vw;
     font-family: 'Roboto', sans-serif;
 }

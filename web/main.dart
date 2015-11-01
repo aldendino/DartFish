@@ -9,7 +9,7 @@ List<Fish> school; // School of fish
 int mouseX = 0; // The x position of the mouse
 int mouseY = 0; // The y position of the mouse
 num lastFrame = 0.0; // Time count for animation deltas
-final int fps = 120; // Frames per second
+final int fps = 60; // Frames per second
 final double interval = 1000 / fps; // Animation interval
 Random rand = new Random(); // Fish property randomization
 ParagraphElement count;
@@ -17,17 +17,17 @@ ParagraphElement count;
 enum Dir { Left, Right } // Fish direction for image choosing
 
 void main() {
-  count = querySelector('#count');
-  count.text = 0.toString();
   fish = new Fish(querySelector('#fish'), querySelector('#fishImg'));
   school = [];
+  school.add(fish);
+  count = querySelector('#count');
+  count.text = 1.toString();
 
   document.onMouseMove.listen((e) {
     int x = e.client.x;
     int y = e.client.y;
     if (x != null) mouseX = x;
     if (y != null) mouseY = y;
-    fish.setBait(mouseX, mouseY);
     school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
   });
 
@@ -35,7 +35,6 @@ void main() {
     switch (e.keyCode) {
       case KeyCode.SPACE:
         spawnFish();
-        //print(school.length + 1);
         break;
       default:
         break;
@@ -48,7 +47,6 @@ void main() {
 /// Recursive loop for animation
 void loop(num delta) {
   if (delta - lastFrame > interval) {
-    fish.animate();
     school.forEach((fish) => fish.animate());
     lastFrame = delta;
   }
@@ -61,16 +59,15 @@ void spawnFish() {
   ImageElement fishImg = new ImageElement()..src = "media/fish_right.png";
   fish.children.add(fishImg);
   document.body.children.add(fish);
-  num lenScale = school.length + 1;
   Fish egg = new Fish(
       fish,
       fishImg,
       rand.nextDouble() + 1,
-      60 * rand.nextDouble() + 20 + lenScale * 2,
-      40 * rand.nextDouble() + 10 + lenScale / 2);
+      60 * rand.nextDouble() + 20 + school.length * 2,
+      40 * rand.nextDouble() + 10 + school.length / 2);
   egg.setBait(mouseX, mouseY);
   school.add(egg);
-  count.text = (school.length + 1).toString();
+  count.text = school.length.toString();
 }
 
 class Fish {
@@ -180,8 +177,8 @@ class Fish {
     }
 
     // Account for the speed factor
-    moveX *= spf;
-    moveY *= spf;
+    moveX *= spf * 2;
+    moveY *= spf * 2;
 
     // Apply the move to the basic fish coordinates
     fishX += moveX;
