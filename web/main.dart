@@ -18,8 +18,12 @@ enum Dir { Left, Right } // Fish direction for image choosing
 
 void main() {
   school = [];
-  count = querySelector('#count');
-  count.text = school.length.toString();
+  count = querySelector('#count')
+    ..text = school.length.toString()
+    ..onClick.listen((e) {
+      window.location.href =
+          'https://upload.wikimedia.org/wikipedia/commons/c/c3/Bludger_(fish).png';
+    });
 
   // Set the bait the current mouse location
   document.onMouseMove.listen((MouseEvent e) {
@@ -50,7 +54,7 @@ void main() {
 
   document.onTouchMove.listen((TouchEvent e) {
     List<Touch> points = e.touches.toList();
-    if(points.length > 0) {
+    if (points.length > 0) {
       mouseX = points.last.client.x;
       mouseY = points.last.client.y;
       school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
@@ -82,11 +86,7 @@ void spawn({int x: 0, int y: 0}) {
     ..classes.add('abs')
     ..src = "media/fish_right.png"
     ..style.left = '${x}px'
-    ..style.top = '${y}px'
-    ..onClick.listen((e) {
-      window.location.href =
-          'https://upload.wikimedia.org/wikipedia/commons/c/c3/Bludger_(fish).png';
-    });
+    ..style.top = '${y}px';
   document.body.querySelector('#sea').children.add(fish);
   Fish egg = new Fish(
       fish,
