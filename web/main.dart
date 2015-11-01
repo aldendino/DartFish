@@ -17,14 +17,12 @@ ParagraphElement count; //
 enum Dir { Left, Right } // Fish direction for image choosing
 
 void main() {
-  //fish = new Fish(querySelector('#fish'));
   school = [];
-  //school.add(fish);
   count = querySelector('#count');
-  count.text = 1.toString();
+  count.text = school.length.toString();
 
   // Set the bait the current mouse location
-  document.onMouseMove.listen((e) {
+  document.onMouseMove.listen((MouseEvent e) {
     int x = e.client.x;
     int y = e.client.y;
     if (x != null) mouseX = x;
@@ -43,15 +41,24 @@ void main() {
     }
   });
 
-  document.onMouseUp.listen((e) {
+  document.onMouseUp.listen((MouseEvent e) {
     int x = e.client.x;
     int y = e.client.y;
     spawn(x: x, y: y);
     school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
   });
 
+  document.onTouchMove.listen((TouchEvent e) {
+    List<Touch> points = e.touches.toList();
+    if(points.length > 0) {
+      mouseX = points.last.client.x;
+      mouseY = points.last.client.y;
+      school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
+    }
+  });
+
   // Randomize fish bait when the mouse leaver
-  document.onMouseLeave.listen((e) {
+  document.onMouseLeave.listen((MouseEvent e) {
     school.forEach((Fish fish) => fish.setBait(
         rand.nextInt(window.innerWidth) + 1,
         rand.nextInt(window.innerHeight) + 1));
@@ -80,7 +87,7 @@ void spawn({int x: 0, int y: 0}) {
       window.location.href =
           'https://upload.wikimedia.org/wikipedia/commons/c/c3/Bludger_(fish).png';
     });
-  document.body.children.add(fish);
+  document.body.querySelector('#sea').children.add(fish);
   Fish egg = new Fish(
       fish,
       rand.nextDouble() + 1,
