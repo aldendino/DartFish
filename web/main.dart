@@ -17,9 +17,9 @@ ParagraphElement count; //
 enum Dir { Left, Right } // Fish direction for image choosing
 
 void main() {
-  fish = new Fish(querySelector('#fish'));
+  //fish = new Fish(querySelector('#fish'));
   school = [];
-  school.add(fish);
+  //school.add(fish);
   count = querySelector('#count');
   count.text = 1.toString();
 
@@ -43,6 +43,13 @@ void main() {
     }
   });
 
+  document.onMouseUp.listen((e) {
+    int x = e.client.x;
+    int y = e.client.y;
+    spawn(x: x, y: y);
+    school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
+  });
+
   // Randomize fish bait when the mouse leaver
   document.onMouseLeave.listen((e) {
     school.forEach((Fish fish) => fish.setBait(
@@ -63,10 +70,12 @@ void loop(num delta) {
 }
 
 /// Spawn a new fish and add it to the school
-void spawn() {
+void spawn({int x: 0, int y: 0}) {
   ImageElement fish = new ImageElement()
     ..classes.add('abs')
     ..src = "media/fish_right.png"
+    ..style.left = '${x}px'
+    ..style.top = '${y}px'
     ..onClick.listen((e) {
       window.location.href =
           'https://upload.wikimedia.org/wikipedia/commons/c/c3/Bludger_(fish).png';
@@ -76,7 +85,9 @@ void spawn() {
       fish,
       rand.nextDouble() + 1,
       60 * rand.nextDouble() + 20 + school.length * 2,
-      40 * rand.nextDouble() + 10 + school.length / 2);
+      40 * rand.nextDouble() + 10 + school.length / 2,
+      x,
+      y);
   egg.setBait(mouseX, mouseY);
   school.add(egg);
   count.text = school.length.toString();
@@ -101,14 +112,18 @@ class Fish {
   double ampY; // The vertical undulation factor
 
   Fish(ImageElement fish,
-      [double spf = 1.0, double ampX = 40.0, double ampY = 30.0]) {
+      [double spf = 1.0,
+      double ampX = 40.0,
+      double ampY = 30.0,
+      int x = 0,
+      int y = 0]) {
     this.fish = fish;
     width = 0;
     height = 0;
     isRight = true;
     fish.style.src = rightImg;
-    fishX = 0.0;
-    fishY = 0.0;
+    fishX = x.toDouble();
+    fishY = y.toDouble();
     baitX = 0;
     baitY = 0;
     time = 2 * PI * rand.nextDouble();
