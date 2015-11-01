@@ -23,6 +23,7 @@ void main() {
   count = querySelector('#count');
   count.text = 1.toString();
 
+  // Set the bait the current mouse location
   document.onMouseMove.listen((e) {
     int x = e.client.x;
     int y = e.client.y;
@@ -31,16 +32,18 @@ void main() {
     school.forEach((Fish fish) => fish.setBait(mouseX, mouseY));
   });
 
+  // spawn a new fish when space is pressed
   window.onKeyPress.listen((KeyboardEvent e) {
     switch (e.keyCode) {
       case KeyCode.SPACE:
-        spawnFish();
+        spawn();
         break;
       default:
         break;
     }
   });
 
+  // Randomize fish bait when the mouse leaver
   document.onMouseLeave.listen((e) {
     school.forEach((Fish fish) => fish.setBait(
         rand.nextInt(window.innerWidth) + 1,
@@ -60,7 +63,7 @@ void loop(num delta) {
 }
 
 /// Spawn a new fish and add it to the school
-void spawnFish() {
+void spawn() {
   ImageElement fish = new ImageElement()
     ..classes.add('abs')
     ..src = "media/fish_right.png"
