@@ -11,6 +11,7 @@ $output = `git pull`;
 </head>
 <body>
 <div>
+    <p>Test1</p>
     <pre>
         <?php echo $output; ?>
     </pre>
