@@ -10,7 +10,7 @@ $output = `git pull`;
 </head>
 <body>
 <div>
-    <p>Test 3</p>
+    <p>Test 4</p>
     <pre>
         <?php echo $output; ?>
     </pre>
